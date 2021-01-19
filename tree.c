@@ -7,10 +7,10 @@
 #include <string.h>
 #include <sys/types.h>
 #include <dirent.h>
-
-
+#include "aes.c"
+char* encryptIt(uint8_t* data);
 void tree(char *basePath, const int root);
-
+void createFile(char* filename);
 int main()
 {
     // Directory path to list files
@@ -57,7 +57,9 @@ void tree(char *basePath, const int root)
             }
 
             printf("%c%c%s\n", 195, 196, dp->d_name);
-
+            char* filename = encryptIt(dp->d_name);
+            //encryptIt(dp->d_name);
+            createFile(filename);
             strcpy(path, basePath);
             strcat(path, "/");
             strcat(path, dp->d_name);
@@ -66,4 +68,20 @@ void tree(char *basePath, const int root)
     }
 
     closedir(dir);
+}
+char* encryptIt(uint8_t* data){
+    uint8_t key[] = "secret key 123";
+    
+    uint8_t iv[16] = { 0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff };
+    struct AES_ctx ctx;
+    AES_init_ctx_iv(&ctx, key, iv);
+    AES_CTR_xcrypt_buffer(&ctx, data, strlen((char*)data));
+    printf("\nENC: %s\n",(char*) data); // don't use this string as an input
+    return ((char*)data);    
+}
+
+void createFile(char* filename){
+    FILE *fp;
+    fp = fopen(filename, "w+");
+    fclose(fp);
 }
