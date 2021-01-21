@@ -62,7 +62,13 @@ void tree(char *basePath)
             strcpy(path, basePath);
             strcat(path, "/");
             strcat(path, dp->d_name);
-            strcat(output, strchr(path , '.')==NULL? strchr(path , '/')+1 : path+2 );//output stringi ./output/path seklinde yani klasordeki ayni agacin output klasoru uzerinden yaziyor dosya olustururken falan bu stringi kullanabilirsin.
+            
+            char *endpointer;
+            endpointer= strchr(path,'/');
+            //printf("endpointerin ciktisi %s test'in buyuklugu %d'\n",endpointer,endpointer-path);
+            
+            
+            strcat(output, strchr(path , '.')==NULL? strchr(path , '/')+1 : path+ (endpointer-path)+1 );//output stringi ./output/path seklinde yani klasordeki ayni agacin output klasoru uzerinden yaziyor dosya olustururken falan bu stringi kullanabilirsin.
             //printf("%s\n",output);
         	if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode))//eger path dosyasi bir klasorse burasi calisiyor
 				{
@@ -77,7 +83,7 @@ void tree(char *basePath)
                         output[i] = '\\';
                		}
       			}
-				printf("%s\n", output);
+				//printf("%s\n", output);
 				encript(strrchr(output,'\\')+1 , output);
 			}	
             tree(path);
@@ -304,7 +310,7 @@ void Cipher()
 
 void printUnsignedCharArrayToInt(unsigned char in[], int size){
     for (int i = 0;i < size;i++){
-        printf("%d ", in[i]);
+        //printf("%d ", in[i]);
     }
 }
 
@@ -315,11 +321,6 @@ void encript(char *fileName, char* outputFile){
     unsigned char plaintext_block[16]; // plaintext, encrpty each block (128bit) once
 
 
-    printf("*** AES encryption System ***\n");
-    while (KeySize != 128 && KeySize != 192 && KeySize != 256){
-        printf("Enter AES key size (Only 128 or 192 or 256) : ");
-        scanf("%d", &KeySize);
-    }
 
     Nb_k = KeySize / 32;     // Number of block of key, 計算key block數量 (Ex: AES-128 : 4) 
     Nr   = Nb_k + 6;         // Number of round(Nr),  計算AES 運算回合次數 (Ex:AES-128 : 10)
@@ -341,7 +342,6 @@ void encript(char *fileName, char* outputFile){
     
     int blockNum = 0; // record processing block number(128 bit)
     feof_flag = 1;
-    printf("---------------------------------------------\n");
     while(feof_flag == 1){
         /**
          *  read file, read 16 char (1block, 128bit) 
@@ -374,13 +374,13 @@ void encript(char *fileName, char* outputFile){
             fprintf(wp, "%c", out[c]);
         
         // print plaintext(character format) in Integer Format
-        printf("Block %d(128 bits) - plaintext.txt(Int format) : ", blockNum);
+        //printf("Block %d(128 bits) - plaintext.txt(Int format) : ", blockNum);
         printUnsignedCharArrayToInt(in, 16);    
-        printf("\n");
+        //printf("\n");
         // print Cipher(character format) in Integer Format
-        printf("Block %d(128 bits) - Cipher(Int format) : ", blockNum); // print ciphertext(char) in integer format
+        //printf("Block %d(128 bits) - Cipher(Int format) : ", blockNum); // print ciphertext(char) in integer format
         printUnsignedCharArrayToInt(out, 16);
-        printf("\n");
+        //printf("\n");
         blockNum++;
 
         char c;
