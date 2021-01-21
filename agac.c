@@ -630,7 +630,7 @@ int main()
     printf("Enter path to list files: ");
     scanf("%s", path);
 	createfile("output");
-	tree(path,0);
+	tree(path,1);
 	
     return 0;
 }
